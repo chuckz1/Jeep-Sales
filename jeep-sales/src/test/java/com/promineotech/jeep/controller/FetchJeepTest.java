@@ -22,6 +22,8 @@ import org.springframework.test.context.jdbc.SqlConfig;
 import com.promineotech.jeep.entity.Jeep;
 import com.promineotech.jeep.entity.JeepModel;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
@@ -43,8 +45,37 @@ class FetchJeepTest {
 		String uri = String.format("http://localhost:%d/jeeps?model=%s&trim=%s", serverPort, model, trim);
 
 		ResponseEntity<List<Jeep>> response = restTemplate.exchange(uri, HttpMethod.GET, null,
-			new ParameterizedTypeReference<>() {});
-		
+				new ParameterizedTypeReference<>() {
+				});
+
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+		List<Jeep> expected = buildExpected();
+
+		assertThat(response.getBody()).isEqualTo(expected);
+	}
+
+	private List<Jeep> buildExpected() {
+		List<Jeep> list = new ArrayList<>();
+
+		// @formatter:off
+		list.add(Jeep.builder()
+				.modelId(JeepModel.WRANGLER)
+				.trimLevel("SPORT")
+				.numDoors(2)
+				.wheelSize(17)
+				.basePrice(new BigDecimal(28475.00))
+				.build());
+
+		list.add(Jeep.builder()
+				.modelId(JeepModel.WRANGLER)
+				.trimLevel("SPORT")
+				.numDoors(4)
+				.wheelSize(17)
+				.basePrice(new BigDecimal(31975.00))
+				.build());
+		// @formatter:on
+
+		return list;
 	}
 }
