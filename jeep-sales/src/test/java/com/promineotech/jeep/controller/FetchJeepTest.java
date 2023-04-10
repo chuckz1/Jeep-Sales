@@ -24,6 +24,7 @@ import com.promineotech.jeep.entity.JeepModel;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
@@ -49,10 +50,11 @@ class FetchJeepTest {
 				});
 
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-
+		
+		List<Jeep> actual = response.getBody();
 		List<Jeep> expected = buildExpected();
 
-		assertThat(response.getBody()).isEqualTo(expected);
+		assertThat(actual).isEqualTo(expected);
 	}
 
 	private List<Jeep> buildExpected() {
@@ -61,21 +63,22 @@ class FetchJeepTest {
 		// @formatter:off
 		list.add(Jeep.builder()
 				.modelId(JeepModel.WRANGLER)
-				.trimLevel("SPORT")
-				.numDoors(2)
-				.wheelSize(17)
-				.basePrice(new BigDecimal(28475.00))
-				.build());
-
-		list.add(Jeep.builder()
-				.modelId(JeepModel.WRANGLER)
-				.trimLevel("SPORT")
+				.trimLevel("Sport")
 				.numDoors(4)
 				.wheelSize(17)
-				.basePrice(new BigDecimal(31975.00))
+				.basePrice(new BigDecimal("31975.00"))
+				.build());
+		
+		list.add(Jeep.builder()
+				.modelId(JeepModel.WRANGLER)
+				.trimLevel("Sport")
+				.numDoors(2)
+				.wheelSize(17)
+				.basePrice(new BigDecimal("28475.00"))
 				.build());
 		// @formatter:on
-
+		
+		Collections.sort(list);
 		return list;
 	}
 }
